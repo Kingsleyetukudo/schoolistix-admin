@@ -1,0 +1,35 @@
+{
+  "name": "admindb",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@headlessui/vue": "^1.7.23",
+    "@tailwindcss/vite": "^4.3.0",
+    "@tanstack/vue-table": "^8.21.3",
+    "apexcharts": "^5.13.0",
+    "axios": "^1.16.1",
+    "chart.js": "^4.5.1",
+    "lucide-vue-next": "^1.0.0",
+    "pinia": "^3.0.4",
+    "sass": "^1.99.0",
+    "tailwindcss": "^4.3.0",
+    "vue": "^3.5.34",
+    "vue-chartjs": "^5.3.3",
+    "vue-router": "^5.0.7",
+    "vue3-apexcharts": "^1.11.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.12.3",
+    "@vitejs/plugin-vue": "^6.0.6",
+    "@vue/tsconfig": "^0.9.1",
+    "typescript": "~6.0.2",
+    "vite": "^8.0.12",
+    "vue-tsc": "^3.2.8"
+  }
+}

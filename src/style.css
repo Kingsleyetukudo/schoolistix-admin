@@ -1,0 +1,108 @@
+@import "tailwindcss";
+@import "./admin/assets/styles/admin.scss";
+
+/* Tailwind CSS v4 Theme Configuration */
+@theme {
+  --color-neutral-800: #080f25;
+  --color-neutral-700: #212c4d;
+  --color-neutral-600: #37446b;
+  --color-neutral-500: #7e89ac;
+  --color-neutral-400: #aeb9e1;
+  --color-neutral-300: #d1dbf9;
+  --color-neutral-200: #d9e1fa;
+  --color-neutral-100: #ffffff;
+
+  --color-secondary-1: #101935;
+  --color-secondary-2: #343b4f;
+  --color-secondary-3: #57c3ff;
+  --color-secondary-4: #9a91fb;
+  --color-secondary-5: #fdb52a;
+
+  --color-primary-1: #6c72ff;
+
+  --color-background: var(--color-neutral-100);
+  --color-surface: var(--color-neutral-200);
+  --color-border: #000000;
+  --color-text-primary: var(--color-neutral-800);
+  --color-text-secondary: var(--color-neutral-600);
+  --color-text-muted: var(--color-neutral-500);
+  --color-accent: var(--color-primary-1);
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-error: #dc2626;
+
+  --font-family-sans: "Cabin", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* CSS Variables for runtime theming - simple light theme */
+:root {
+  color-scheme: light;
+
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --bg-surface: #e8e8e8;
+  --text-primary: #111111;
+  --text-secondary: #3f3f3f;
+  --text-muted: #777777;
+  --border-color: #000000;
+  --accent-color: #111111;
+  --accent-gradient: linear-gradient(135deg, #111111, #333333);
+  --sidebar-bg: linear-gradient(180deg, #0b1124 0%, #090a0f 100%);
+  --card-bg: #ffffff;
+  --hover-bg: rgba(0, 0, 0, 0.05);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family: var(--font-family-sans);
+  color: var(--text-primary);
+  background: #ffffff;
+}
+
+/* Utility Classes */
+.bg-primary-gradient {
+  background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+}
+
+.bg-accent-gradient {
+  background: var(--accent-gradient);
+}
+
+.text-accent {
+  color: var(--accent-color);
+}
+
+.border-accent {
+  border-color: var(--accent-color);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #bbbbbb;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #999999;
+}

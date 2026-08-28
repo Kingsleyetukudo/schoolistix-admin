@@ -1,0 +1,28 @@
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 0.85rem 1rem;
+  border: 1px solid #000000;
+  text-align: left;
+}
+
+.admin-table th {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #333333;
+  background: #fafafa;
+}
+
+.admin-table td {
+  color: #111111;
+}
+
+.admin-table tr:hover td {
+  background: #f5f5f5;
+}
