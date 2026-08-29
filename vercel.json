@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/api",
+      "dest": "https://api.schoolistix.com/api"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "https://api.schoolistix.com/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
+}
