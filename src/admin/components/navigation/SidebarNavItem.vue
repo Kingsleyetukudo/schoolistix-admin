@@ -1,9 +1,8 @@
-<template>
+﻿<template>
   <RouterLink
     :to="to"
     class="admin-sidebar-link flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium transition-all"
-    active-class="bg-gradient-to-r from-indigo-500/20 to-purple-600/20 text-indigo-400"
-    inactive-class="text-slate-400 hover:bg-white/5 hover:text-slate-200"
+    active-class="admin-sidebar-link--active"
   >
     <span
       v-if="iconComponent"

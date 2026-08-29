@@ -64,25 +64,7 @@
         <span class="text-sm text-slate-600">{{ formatDate(row.paid_at) }}</span>
       </template>
       <template #actions="{ row }">
-        <div class="flex items-center gap-2">
-          <template v-if="String(row.status).toLowerCase() === 'pending'">
-            <button
-              type="button"
-              class="rounded-lg border border-emerald-700 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800 transition hover:bg-emerald-100"
-              @click="openApprove(row)"
-            >
-              Approve
-            </button>
-            <button
-              type="button"
-              class="rounded-lg border border-rose-700 bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-800 transition hover:bg-rose-100"
-              @click="openReject(row)"
-            >
-              Reject
-            </button>
-          </template>
-          <span v-else class="text-xs text-slate-500">—</span>
-        </div>
+        <TableRowMenu :actions="buildRowActions(row)" />
       </template>
     </AdminDataTable>
 
@@ -141,8 +123,12 @@ import AdminConfirmModal from '@admin/components/common/AdminConfirmModal.vue'
 import SearchableDropdownSelect from '@admin/components/common/SearchableDropdownSelect.vue'
 import { paymentsApi } from '@admin/services/paymentsApi'
 import { formatNumber } from '@admin/utils/formatters'
+import { useRouter } from 'vue-router'
+import TableRowMenu from '@admin/components/common/TableRowMenu.vue'
+import { CheckCircle2, School, XCircle } from 'lucide-vue-next'
 
 type PaymentRow = Record<string, unknown>
+const router = useRouter()
 
 const rows = ref<PaymentRow[]>([])
 const activeStatus = ref('')
@@ -185,8 +171,46 @@ const approveDescription = computed(() => {
   return `Confirm the ₦${formatNumber(Number(payment.amount) || 0)} manual payment from ${String(payment.school_name ?? 'this school')}. This activates the school's ${String(payment.plan ?? 'current').toUpperCase()} plan access.`
 })
 
+const buildRowActions = (row: PaymentRow) => {
+  const actions: Array<{
+    key: string
+    label: string
+    variant?: 'default' | 'danger'
+    icon?: unknown
+    onClick: () => void
+  }> = []
+  const schoolId = String(row.school_id ?? '')
+  if (schoolId) {
+    actions.push({
+      key: 'view-school',
+      label: 'View School',
+      icon: School,
+      onClick: () => router.push(`/admin/schools/${schoolId}`),
+    })
+  }
+  if (String(row.status).toLowerCase() === 'pending') {
+    actions.push(
+      {
+        key: 'approve',
+        label: 'Approve Payment',
+        icon: CheckCircle2,
+        onClick: () => openApprove(row),
+      },
+      {
+        key: 'reject',
+        label: 'Reject Payment',
+        variant: 'danger',
+        icon: XCircle,
+        onClick: () => openReject(row),
+      },
+    )
+  }
+  return actions
+}
+
 const normalizeRow = (row: PaymentRow): PaymentRow => ({
   id: row.id,
+  school_id: row.school_id ?? row.schoolId ?? null,
   school_name: row.school_name ?? row.schoolName ?? '',
   amount: row.amount,
   plan: row.subscription_plan ?? row.plan ?? '',

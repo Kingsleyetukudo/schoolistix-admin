@@ -20,6 +20,7 @@ const getIncomingSchoolReplyMarker = (ticket: SupportTicket | null | undefined) 
 export const useSupportStore = defineStore('adminSupport', () => {
   const tickets = ref<SupportTicket[]>([])
   const selectedTicket = ref<SupportTicket | null>(null)
+  const channel = ref<'ticket' | 'chat'>('ticket')
   const isLoading = ref(false)
   const connectionState = ref<'offline' | 'connecting' | 'live' | 'degraded' | 'preview'>('offline')
   const stream = ref<EventSource | null>(null)
@@ -63,14 +64,29 @@ export const useSupportStore = defineStore('adminSupport', () => {
     return getIncomingSchoolReplyMarker(currentTicket) !== nextMarker
   }
 
-  const fetchTickets = async () => {
+  const fetchTickets = async (nextChannel?: 'ticket' | 'chat') => {
     isLoading.value = true
     try {
+      if (nextChannel) {
+        channel.value = nextChannel
+      }
       const response = await supportApi.list()
       tickets.value = response.data
     } finally {
       isLoading.value = false
     }
+  }
+
+  const markTicketRead = async (ticketId: string) => {
+    const ticket = await supportApi.markRead(ticketId)
+    applyIncomingTicket(ticket)
+    return ticket
+  }
+
+  const assignTicket = async (ticketId: string, assignedToAdminId: string) => {
+    const ticket = await supportApi.assign(ticketId, assignedToAdminId)
+    applyIncomingTicket(ticket)
+    return ticket
   }
 
   const fetchTicket = async (id: string) => {
@@ -174,10 +190,13 @@ export const useSupportStore = defineStore('adminSupport', () => {
   return {
     tickets,
     selectedTicket,
+    channel,
     isLoading,
     connectionState,
     fetchTickets,
     fetchTicket,
+    markTicketRead,
+    assignTicket,
     connectStream,
     disconnectStream,
     applyIncomingTicket,

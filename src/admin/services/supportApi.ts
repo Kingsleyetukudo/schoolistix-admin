@@ -33,10 +33,14 @@ const toIsoString = (value: unknown): string => {
 
 export const normalizeSupportTicket = (ticket: Record<string, unknown> = {}): SupportTicket => {
   const school = ticket.school as Record<string, unknown> | undefined
+  const assignedTo = ticket.assigned_to as Record<string, unknown> | undefined
+  const channel = String(ticket.channel ?? 'ticket') === 'chat' ? 'chat' : 'ticket'
 
   return {
     id: String(ticket.id ?? ''),
+    channel,
     subject: String(ticket.subject ?? ''),
+    message: String(ticket.message ?? ''),
     schoolId: String(ticket.school_id ?? ticket.schoolId ?? ''),
     schoolName: String(ticket.school_name ?? ticket.schoolName ?? school?.name ?? ''),
     status: String(ticket.status ?? 'pending_agent_response'),
@@ -45,6 +49,14 @@ export const normalizeSupportTicket = (ticket: Record<string, unknown> = {}): Su
     createdAt: ticket.created_at ? String(ticket.created_at) : ticket.createdAt ? String(ticket.createdAt) : null,
     latestReplyAt: ticket.latest_reply_at ? String(ticket.latest_reply_at) : ticket.latestReplyAt ? String(ticket.latestReplyAt) : null,
     unreadForAdmin: Boolean(ticket.unread_for_admin ?? ticket.unreadForAdmin),
+    assignedTo: assignedTo
+      ? {
+          id: String(assignedTo.id ?? ''),
+          name: String(assignedTo.name ?? ''),
+          email: String(assignedTo.email ?? ''),
+          role: String(assignedTo.role ?? ''),
+        }
+      : null,
     replyCount: Number(ticket.reply_count ?? ticket.replyCount ?? 0),
   }
 }
@@ -55,8 +67,15 @@ export const buildSupportStreamUrl = (token: string) =>
 export const getSupportStreamAccessToken = () => readStoredAccessToken()
 
 export const supportApi = {
-  async list() {
-    const payload = await unwrapData<SupportTicketListResponse>(adminApi.get('/support/tickets'))
+  async list(channel?: string) {
+    const payload = await unwrapData<SupportTicketListResponse>(
+      adminApi.get('/support/tickets', {
+        params: {
+          ...(channel ? { channel } : {}),
+          per_page: 100,
+        },
+      }),
+    )
     const rows = Array.isArray(payload?.data)
       ? payload.data.map((ticket) => normalizeSupportTicket(ticket as Record<string, unknown>))
       : []
@@ -75,6 +94,18 @@ export const supportApi = {
   async getDetail(id: string) {
     const payload = await unwrapData<Record<string, unknown>>(adminApi.get(`/support/tickets/${id}`))
     return payload ?? {}
+  },
+
+  async markRead(id: string) {
+    const response = await adminApi.post(`/support/tickets/${id}/read`)
+    return normalizeSupportTicket(response.data)
+  },
+
+  async assign(id: string, assignedToAdminId: string) {
+    const response = await adminApi.post(`/support/tickets/${id}/assign`, {
+      assignedToAdminId,
+    })
+    return normalizeSupportTicket(response.data)
   },
 
   async reply(id: string, message: string, isInternal = false, status?: string) {

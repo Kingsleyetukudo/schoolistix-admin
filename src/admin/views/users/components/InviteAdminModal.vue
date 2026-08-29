@@ -86,13 +86,25 @@ const submitInvite = async () => {
   const parts = fullName.value.trim().split(/\s+/)
   isSubmitting.value = true
   try {
-    await usersApi.invite({
+    const result = (await usersApi.invite({
       firstName: parts[0] || 'Invited',
       lastName: parts.slice(1).join(' ') || 'Admin',
       email: email.value.trim(),
       role: role.value,
-    })
-    showNotice(`Invite sent to ${email.value.trim()}.`, 'success')
+    })) as Record<string, unknown>
+    const temporaryPassword = String(result?.temporary_password ?? '')
+    const emailSent = Boolean(result?.email_sent)
+    const emailError = String(result?.email_error ?? '')
+    if (emailSent) {
+      showNotice(`Invite sent to ${email.value.trim()}. Login details were emailed to them.`, 'success')
+    } else if (temporaryPassword) {
+      showNotice(
+        `Invite created, but the email could not be sent (${emailError || 'unknown reason'}). Share these login details with ${email.value.trim()}: temporary password ${temporaryPassword}.`,
+        'success',
+      )
+    } else {
+      showNotice(`Invite sent to ${email.value.trim()}.`, 'success')
+    }
     fullName.value = ''
     email.value = ''
     role.value = 'support_admin'

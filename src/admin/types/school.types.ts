@@ -7,6 +7,13 @@ export interface School extends Record<string, unknown> {
   students: number
   staff: number
   storageGb: number
+  storage_used_bytes?: number
+  storage_used_mb?: number
+  storage_readable?: string
+  storage_limit_bytes?: number
+  storage_limit_readable?: string
+  storage_used_percent?: number
+  counts?: Record<string, unknown>
   createdAt: string
 }
 

@@ -8,7 +8,15 @@
         Sign in to the super admin control board.
       </p>
 
-      <form class="mt-10 space-y-6" @submit.prevent="submit">
+      <p
+  v-if="isIdleLogout"
+  class="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800"
+>
+  You were logged out because the session was idle for over an hour. Please
+  sign in again.
+</p>
+
+<form class="mt-10 space-y-6" @submit.prevent="submit">
         <div>
           <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500">
             Email
@@ -53,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAdminAuth } from '@admin/composables/useAdminAuth'
 
@@ -69,6 +77,7 @@ const router = useRouter()
 const route = useRoute()
 const { login, isLoading, error } = useAdminAuth()
 
+const isIdleLogout = computed(() => route.query.reason === 'idle')
 const email = ref(demoAccounts[0])
 const password = ref('preview-password')
 

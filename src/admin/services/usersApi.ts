@@ -1,13 +1,13 @@
 import { adminApi } from './adminApi'
 
 const normalizeUser = (user: Record<string, unknown>) => ({
-  id: user.id,
+  id: String(user.id ?? ''),
   name:
     String(user.name ?? '') ||
     [user.firstName, user.lastName].filter(Boolean).join(' ').trim(),
-  email: user.email,
-  role: user.role,
-  status: user.status ?? 'active',
+  email: String(user.email ?? ''),
+  role: String(user.role ?? ''),
+  status: String(user.status ?? 'active'),
   lastLoginAt: user.lastLoginAt ?? null,
   createdAt: user.createdAt ?? null,
 })

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <nav class="w-full space-y-6 overflow-hidden">
     <SidebarNavGroup title="Overview">
       <SidebarNavItem
@@ -28,7 +28,7 @@
       />
       <button
         type="button"
-        class="flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-left text-sm font-medium text-slate-400 transition hover:bg-white/5 hover:text-white"
+        class="flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-left text-sm font-medium text-white transition hover:bg-[#1D204C] hover:text-white"
       >
         <span
           class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl"

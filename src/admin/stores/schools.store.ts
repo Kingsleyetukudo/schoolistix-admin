@@ -49,8 +49,13 @@ export const useSchoolsStore = defineStore('adminSchools', () => {
   }
 
   async function loginAsSchool(id: string) {
-    const { token } = await schoolsApi.loginAs(id)
-    window.open(`/login?token=${token}`, '_blank', 'noopener,noreferrer')
+    const result = await schoolsApi.loginAs(id)
+    const token = String(result.access_token || result.token || '')
+    const loginUrl = String(result.login_url || '').replace(/\/+$/, '')
+    const target = loginUrl
+      ? `${loginUrl}/login?token=${encodeURIComponent(token)}`
+      : `${window.location.origin}/login?token=${encodeURIComponent(token)}`
+    window.open(target, '_blank', 'noopener,noreferrer')
   }
 
   function setFilters(newFilters: Partial<SchoolFilters>) {

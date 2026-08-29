@@ -1,6 +1,6 @@
-<template>
+﻿<template>
   <aside
-    class="admin-sidebar flex h-full w-[19rem] flex-col border-r border-white/6 bg-[#090a0f] overflow-x-hidden"
+    class="admin-sidebar flex h-full w-[19rem] flex-col border-r border-white/6 bg-[#040738] overflow-x-hidden"
   >
     <!-- Logo section - fixed at top, never scrolls -->
     <div class="shrink-0 px-3 pt-5">

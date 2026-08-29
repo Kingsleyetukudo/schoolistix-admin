@@ -9,7 +9,7 @@
     </div>
 
     <form class="space-y-3" @submit.prevent="submit">
-      <div>
+      <div v-if="!isChat">
         <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Update status</label>
         <SearchableDropdownSelect
           label="Status"
@@ -24,10 +24,10 @@
         v-model="message"
         rows="4"
         class="min-h-28 w-full rounded-lg border border-black bg-white px-4 py-3 text-sm outline-none focus:border-slate-500"
-        placeholder="Write a reply..."
+        :placeholder="isChat ? 'Type a chat message...' : 'Write a reply...'"
         required
       ></textarea>
-      <label class="flex items-center gap-2 text-sm text-slate-700">
+      <label v-if="!isChat" class="flex items-center gap-2 text-sm text-slate-700">
         <input v-model="isInternal" type="checkbox" class="h-4 w-4" />
         Internal note (not visible to the school)
       </label>
@@ -36,20 +36,22 @@
         class="rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
         :disabled="!message.trim() || saving"
       >
-        {{ saving ? 'Sending…' : 'Send Reply' }}
+        {{ saving ? 'Sending…' : isChat ? 'Send Message' : 'Send Reply' }}
       </button>
     </form>
   </AdminPanelCard>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import axios from 'axios'
 import AdminPanelCard from '@admin/components/common/AdminPanelCard.vue'
 import SearchableDropdownSelect from '@admin/components/common/SearchableDropdownSelect.vue'
 import { supportApi } from '@admin/services/supportApi'
 
-const props = defineProps<{ ticketId: string }>()
+const props = defineProps<{ ticketId: string; channel?: string }>()
+
+const isChat = computed(() => String(props.channel ?? 'ticket') === 'chat')
 const emit = defineEmits<{ (e: 'replied'): void }>()
 
 const statusOptions = [

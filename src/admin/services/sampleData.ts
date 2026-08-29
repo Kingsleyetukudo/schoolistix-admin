@@ -33,9 +33,9 @@ export const samplePayments: PaymentRecord[] = [
 ]
 
 export const sampleTickets: SupportTicket[] = [
-  { id: 'tic-1', subject: 'Unable to publish results', schoolName: 'Greenfield College', status: 'open', priority: 'high', updatedAt: '2026-05-20T09:20:00Z' },
-  { id: 'tic-2', subject: 'Need billing clarification', schoolName: 'Sunrise Academy', status: 'pending', priority: 'medium', updatedAt: '2026-05-19T14:00:00Z' },
-  { id: 'tic-3', subject: 'Domain SSL setup', schoolName: 'Everest High', status: 'resolved', priority: 'low', updatedAt: '2026-05-18T08:30:00Z' },
+  { id: 'tic-1', channel: 'ticket', subject: 'Unable to publish results', schoolName: 'Greenfield College', status: 'open', priority: 'high', updatedAt: '2026-05-20T09:20:00Z' },
+  { id: 'tic-2', channel: 'ticket', subject: 'Need billing clarification', schoolName: 'Sunrise Academy', status: 'pending', priority: 'medium', updatedAt: '2026-05-19T14:00:00Z' },
+  { id: 'tic-3', channel: 'ticket', subject: 'Domain SSL setup', schoolName: 'Everest High', status: 'resolved', priority: 'low', updatedAt: '2026-05-18T08:30:00Z' },
 ]
 
 export const sampleAuditLogs: AuditLog[] = [

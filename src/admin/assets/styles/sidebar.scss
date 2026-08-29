@@ -1,6 +1,6 @@
-.admin-sidebar {
-  background: linear-gradient(180deg, #080f25 0%, #101935 100%);
-  border-right-color: rgba(126, 137, 172, 0.12);
+﻿.admin-sidebar {
+  background: #040738;
+  border-right-color: rgba(255, 255, 255, 0.12);
 }
 
 .admin-sidebar .admin-sidebar-logo {
@@ -10,71 +10,41 @@
 /* Sidebar Links */
 .admin-sidebar a.admin-sidebar-link,
 .admin-sidebar .admin-sidebar-ghost {
-  color: #aeb9e1;
+  color: #ffffff;
   transition: all 0.2s ease;
 }
 
 .admin-sidebar .admin-sidebar-icon {
-  background: rgba(55, 68, 107, 0.4);
-  border: 1px solid rgba(126, 137, 172, 0.15);
-  color: #d1dbf9;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffffff;
   transition: all 0.2s ease;
 }
 
 .admin-sidebar a.admin-sidebar-link:hover,
 .admin-sidebar .admin-sidebar-ghost:hover {
-  background: rgba(108, 114, 255, 0.1);
+  background: #1d204c;
   color: #ffffff;
 }
 
 .admin-sidebar a.admin-sidebar-link:hover .admin-sidebar-icon,
 .admin-sidebar .admin-sidebar-ghost:hover .admin-sidebar-icon {
-  background: rgba(108, 114, 255, 0.2);
-  border-color: rgba(108, 114, 255, 0.3);
-}
-
-/* Active Link */
-.admin-sidebar a.router-link-active.admin-sidebar-link {
-  background: linear-gradient(
-    135deg,
-    rgba(108, 114, 255, 0.15),
-    rgba(154, 145, 251, 0.1)
-  );
-  border-right: 2px solid #6c72ff;
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.28);
   color: #ffffff;
 }
 
-.admin-sidebar a.router-link-active.admin-sidebar-link .admin-sidebar-icon {
-  background: linear-gradient(
-    135deg,
-    rgba(108, 114, 255, 0.25),
-    rgba(154, 145, 251, 0.2)
-  );
-  border-color: rgba(108, 114, 255, 0.4);
-  color: #6c72ff;
+/* Active Link */
+.admin-sidebar a.router-link-active.admin-sidebar-link,
+.admin-sidebar a.admin-sidebar-link.admin-sidebar-link--active {
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  color: #040738;
 }
 
-/* Light Mode Sidebar */
-:root.light .admin-sidebar {
-  background: linear-gradient(180deg, #ffffff 0%, #d9e1fa 100%);
-  border-right-color: rgba(55, 68, 107, 0.1);
-}
-
-:root.light .admin-sidebar a.admin-sidebar-link,
-:root.light .admin-sidebar .admin-sidebar-ghost {
-  color: #37446b;
-}
-
-:root.light .admin-sidebar .admin-sidebar-icon {
-  background: rgba(55, 68, 107, 0.08);
-  border-color: rgba(55, 68, 107, 0.1);
-}
-
-:root.light .admin-sidebar a.router-link-active.admin-sidebar-link {
-  background: linear-gradient(
-    135deg,
-    rgba(108, 114, 255, 0.1),
-    rgba(154, 145, 251, 0.05)
-  );
-  color: #6c72ff;
+.admin-sidebar a.router-link-active.admin-sidebar-link .admin-sidebar-icon,
+.admin-sidebar a.admin-sidebar-link.admin-sidebar-link--active .admin-sidebar-icon {
+  background: rgba(4, 7, 56, 0.08);
+  border-color: rgba(4, 7, 56, 0.2);
+  color: #040738;
 }

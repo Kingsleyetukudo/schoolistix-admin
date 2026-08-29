@@ -77,6 +77,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import {
   Dialog,
   DialogPanel,
@@ -85,8 +86,22 @@ import {
 } from "@headlessui/vue";
 import Header from "./Header.vue";
 import Sidebar from "./Sidebar.vue";
+import { useAdminAuth } from "@admin/composables/useAdminAuth";
+import { useIdleLogout } from "@admin/composables/useIdleLogout";
 
+const router = useRouter();
+const { logout } = useAdminAuth();
 const isSidebarOpen = ref(false);
+
+const IDLE_TIMEOUT_MS = 60 * 60 * 1000;
+
+useIdleLogout({
+  timeoutMs: IDLE_TIMEOUT_MS,
+  onIdle: () => {
+    logout();
+    router.push({ name: "AdminLogin", query: { reason: "idle" } });
+  },
+});
 
 const toggleSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value;
