@@ -28,7 +28,7 @@
             placeholder="you@schoolistix.com"
             class="h-12 w-full rounded-xl border border-black bg-white px-4 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-slate-300"
           />
-          <datalist id="admin-emails">
+          <datalist v-if="demoLoginEnabled" id="admin-emails">
             <option v-for="account in demoAccounts" :key="account" :value="account" />
           </datalist>
         </div>
@@ -72,14 +72,16 @@ const demoAccounts = [
   'sam@schoolistix.com',
   'amina@schoolistix.com',
 ]
+const demoLoginEnabled =
+  import.meta.env.DEV || String(import.meta.env.VITE_ENABLE_DEMO_LOGIN ?? '').toLowerCase() === 'true'
 
 const router = useRouter()
 const route = useRoute()
 const { login, isLoading, error } = useAdminAuth()
 
 const isIdleLogout = computed(() => route.query.reason === 'idle')
-const email = ref(demoAccounts[0])
-const password = ref('preview-password')
+const email = ref(demoLoginEnabled ? demoAccounts[0] : '')
+const password = ref(demoLoginEnabled ? 'preview-password' : '')
 
 const submit = async () => {
   try {
