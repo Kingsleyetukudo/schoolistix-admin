@@ -24,13 +24,9 @@
           <input
             v-model="email"
             type="email"
-            list="admin-emails"
             placeholder="you@schoolistix.com"
             class="h-12 w-full rounded-xl border border-black bg-white px-4 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-slate-300"
           />
-          <datalist v-if="demoLoginEnabled" id="admin-emails">
-            <option v-for="account in demoAccounts" :key="account" :value="account" />
-          </datalist>
         </div>
 
         <div>
@@ -65,23 +61,13 @@ import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAdminAuth } from '@admin/composables/useAdminAuth'
 
-const demoAccounts = [
-  'jane@schoolistix.com',
-  'biola@schoolistix.com',
-  'john@schoolistix.com',
-  'sam@schoolistix.com',
-  'amina@schoolistix.com',
-]
-const demoLoginEnabled =
-  import.meta.env.DEV || String(import.meta.env.VITE_ENABLE_DEMO_LOGIN ?? '').toLowerCase() === 'true'
-
 const router = useRouter()
 const route = useRoute()
 const { login, isLoading, error } = useAdminAuth()
 
 const isIdleLogout = computed(() => route.query.reason === 'idle')
-const email = ref(demoLoginEnabled ? demoAccounts[0] : '')
-const password = ref(demoLoginEnabled ? 'preview-password' : '')
+const email = ref('')
+const password = ref('')
 
 const submit = async () => {
   try {
