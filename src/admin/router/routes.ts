@@ -15,6 +15,10 @@ export const ADMIN_ROUTE_PATHS = {
   features: '/admin/features',
   maintenance: '/admin/maintenance',
   reports: '/admin/reports',
+  aiUsage: '/admin/ai-usage',
+  aiSettings: '/admin/ai-settings',
+  aiFeedback: '/admin/ai-feedback',
+  aiKnowledge: '/admin/ai-knowledge',
   settings: '/admin/settings',
 } as const
 
@@ -115,6 +119,30 @@ export const adminRoutes: RouteRecordRaw[] = [
     name: 'AdminMaintenance',
     component: () => import('@admin/views/maintenance/MaintenanceSettings.vue'),
     meta: { title: 'Maintenance', icon: icon('maintenance'), roles: ['super_admin', 'technical_admin'] },
+  },
+  {
+    path: 'ai-usage',
+    name: 'AdminAiUsage',
+    component: () => import('@admin/views/ai/AiUsage.vue'),
+    meta: { title: 'AI Usage & Cost', icon: icon('ai'), roles: ['super_admin', 'support_admin', 'technical_admin'] },
+  },
+  {
+    path: 'ai-settings',
+    name: 'AdminAiSettings',
+    component: () => import('@admin/views/ai/AiSettings.vue'),
+    meta: { title: 'AI Settings', icon: icon('aiSettings'), roles: ['super_admin'] },
+  },
+  {
+    path: 'ai-feedback',
+    name: 'AdminAiFeedback',
+    component: () => import('@admin/views/ai/AiFeedback.vue'),
+    meta: { title: 'AI Feedback & Audit', icon: icon('audit'), roles: ['super_admin'] },
+  },
+  {
+    path: 'ai-knowledge',
+    name: 'AdminAiKnowledge',
+    component: () => import('@admin/views/ai/AiKnowledge.vue'),
+    meta: { title: 'AI Knowledge Base', icon: icon('ai'), roles: ['super_admin'] },
   },
   {
     path: 'reports',

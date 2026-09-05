@@ -11,6 +11,8 @@ import {
   Megaphone,
   School,
   Settings,
+  SlidersHorizontal,
+  Sparkles,
   Users,
   WalletCards,
   Wrench,
@@ -31,6 +33,8 @@ export const adminNavIcons = {
   backups: DatabaseBackup,
   reports: ChartColumn,
   settings: Settings,
+  ai: Sparkles,
+  aiSettings: SlidersHorizontal,
 } satisfies Record<string, Component>
 
 export type AdminNavIcon = keyof typeof adminNavIcons

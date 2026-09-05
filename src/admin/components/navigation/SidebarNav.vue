@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <nav class="w-full space-y-6 overflow-hidden">
     <SidebarNavGroup title="Overview">
       <SidebarNavItem
@@ -12,6 +12,15 @@
     <SidebarNavGroup title="Operations">
       <SidebarNavItem
         v-for="route in operationsRoutes"
+        :key="String(route.name)"
+        :to="`/admin/${route.path}`"
+        :icon="String(route.meta?.icon ?? '')"
+        :label="String(route.meta?.title ?? '')"
+      />
+    </SidebarNavGroup>
+    <SidebarNavGroup title="AI Platform">
+      <SidebarNavItem
+        v-for="route in aiRoutes"
         :key="String(route.name)"
         :to="`/admin/${route.path}`"
         :icon="String(route.meta?.icon ?? '')"
@@ -70,6 +79,9 @@ const operationsRoutes = computed(() =>
     "AdminAnnouncements",
     "AdminAudit",
   ]),
+);
+const aiRoutes = computed(() =>
+  pickRoutes(["AdminAiUsage", "AdminAiSettings", "AdminAiFeedback"]),
 );
 const systemRoutes = computed(() =>
   pickRoutes([
