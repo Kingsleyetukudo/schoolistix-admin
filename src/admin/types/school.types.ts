@@ -15,6 +15,15 @@ export interface School extends Record<string, unknown> {
   storage_used_percent?: number
   counts?: Record<string, unknown>
   createdAt: string
+  short_code?: string
+  phone?: string | null
+  state?: string | null
+  country?: string | null
+  size?: string | null
+  sections?: Array<{ code: string; label: string }>
+  admin_email?: string | null
+  registered_at?: string
+  users?: Array<{ id: string; name: string; email: string; role: string }>
 }
 
 export interface SchoolFilters {

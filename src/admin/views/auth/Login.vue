@@ -33,12 +33,25 @@
           <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500">
             Password
           </label>
+          <div class="relative">
           <input
             v-model="password"
-            type="password"
+            :type="showPassword ? 'text' : 'password'"
             placeholder="••••••••"
-            class="h-12 w-full rounded-xl border border-black bg-white px-4 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-slate-300"
+            autocomplete="current-password"
+            class="h-12 w-full rounded-xl border border-black bg-white px-4 pr-12 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-slate-300"
           />
+          <button
+            type="button"
+            :aria-label="showPassword ? 'Hide password' : 'Show password'"
+            :title="showPassword ? 'Hide password' : 'Show password'"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-700"
+            @click="showPassword = !showPassword"
+          >
+            <EyeOff v-if="showPassword" :size="18" />
+            <Eye v-else :size="18" />
+          </button>
+          </div>
         </div>
 
         <p v-if="error" class="rounded-xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-700">
@@ -60,6 +73,7 @@
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAdminAuth } from '@admin/composables/useAdminAuth'
+import { Eye, EyeOff } from 'lucide-vue-next'
 
 const router = useRouter()
 const route = useRoute()
@@ -68,6 +82,7 @@ const { login, isLoading, error } = useAdminAuth()
 const isIdleLogout = computed(() => route.query.reason === 'idle')
 const email = ref('')
 const password = ref('')
+const showPassword = ref(false)
 
 const submit = async () => {
   try {
