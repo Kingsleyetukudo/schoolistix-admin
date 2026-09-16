@@ -58,9 +58,15 @@ adminApi.interceptors.response.use(
 
     if (status === 401 && !isLoginRequest && typeof window !== 'undefined') {
       window.localStorage.removeItem(ADMIN_SESSION_KEY)
-      if (!window.location.pathname.startsWith('/admin/login')) {
+      if (
+        !window.location.pathname.startsWith('/admin/login') &&
+        !window.location.pathname.startsWith('/super-admin/login')
+      ) {
         const redirect = encodeURIComponent(window.location.pathname + window.location.search)
-        window.location.assign(`/admin/login?redirect=${redirect}`)
+        const loginPath = window.location.pathname.startsWith('/super-admin')
+          ? '/super-admin/login'
+          : '/admin/login'
+        window.location.assign(`${loginPath}?redirect=${redirect}`)
       }
     }
 

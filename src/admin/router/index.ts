@@ -21,6 +21,19 @@ const router = createRouter({
       ],
     },
     {
+      path: '/super-admin/login',
+      component: AdminAuthLayout,
+      beforeEnter: adminGuestGuard,
+      children: [
+        {
+          path: '',
+          name: 'SuperAdminLogin',
+          component: () => import('@admin/views/auth/Login.vue'),
+          meta: { guestOnly: true, title: 'Super Admin Login' },
+        },
+      ],
+    },
+    {
       path: '/admin',
       component: AdminLayout,
       beforeEnter: adminAuthGuard,

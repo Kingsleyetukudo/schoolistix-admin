@@ -2,7 +2,7 @@
   <section class="flex min-h-screen items-center justify-center bg-white px-4 py-8">
     <div class="w-full max-w-[32rem]">
       <h1 class="text-center text-[2.15rem] font-extrabold uppercase tracking-[0.03em] text-slate-900 sm:text-[2.9rem]">
-        Admin Login
+        {{ isSuperAdminLogin ? 'Super Admin Login' : 'Admin Login' }}
       </h1>
       <p class="mt-2 text-center text-sm text-slate-500">
         Sign in to the super admin control board.
@@ -80,6 +80,7 @@ const route = useRoute()
 const { login, isLoading, error } = useAdminAuth()
 
 const isIdleLogout = computed(() => route.query.reason === 'idle')
+const isSuperAdminLogin = computed(() => route.path.startsWith('/super-admin'))
 const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
