@@ -3,6 +3,15 @@
     <div class="flex flex-wrap gap-3">
       <button
         type="button"
+        class="rounded-lg border border-indigo-700 px-4 py-2 text-sm font-semibold"
+        :class="school?.multi_campus_enabled ? 'bg-indigo-700 text-white' : 'bg-white text-indigo-800'"
+        :disabled="acting || !school"
+        @click="toggleMultiCampus"
+      >
+        {{ school?.multi_campus_enabled ? 'Disable Multi-campus' : 'Enable Multi-campus' }}
+      </button>
+      <button
+        type="button"
         class="rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
         :disabled="acting"
         @click="loginAs"
@@ -208,6 +217,22 @@ const grantTester = async () => {
     showNotice(errorMessage(error), 'error')
   } finally {
     isSaving.value = false
+  }
+}
+
+const toggleMultiCampus = async () => {
+  const school = props.school
+  if (!school || acting.value) return
+  const enabled = !Boolean(school.multi_campus_enabled)
+  acting.value = true
+  try {
+    await schoolsApi.setMultiCampus(String(school.id), enabled)
+    showNotice(`Multi-campus access ${enabled ? 'enabled' : 'disabled'} for ${String(school.name)}.`)
+    reload()
+  } catch (error) {
+    showNotice(errorMessage(error), 'error')
+  } finally {
+    acting.value = false
   }
 }
 </script>

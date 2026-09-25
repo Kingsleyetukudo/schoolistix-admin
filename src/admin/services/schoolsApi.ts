@@ -58,6 +58,10 @@ export const schoolsApi = {
     const response = await adminApi.put(`/schools/${id}/notes`, { note })
     return response.data
   },
+  async setMultiCampus(id: string, enabled: boolean) {
+    const response = await adminApi.put(`/schools/${id}/multi-campus`, { enabled })
+    return response.data
+  },
     async activateTester(
     id: string,
     payload: { plan?: string; billingCycle?: string; durationDays?: number; note?: string } = {},
