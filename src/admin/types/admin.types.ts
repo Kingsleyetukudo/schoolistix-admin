@@ -12,6 +12,7 @@ export interface AdminUser extends Record<string, unknown> {
   role: AdminRole
   avatarUrl?: string | null
   lastLoginAt?: string | null
+  mfaEnabled?: boolean
 }
 
 export interface AdminSession extends Record<string, unknown> {

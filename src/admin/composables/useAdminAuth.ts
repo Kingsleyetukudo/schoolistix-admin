@@ -3,7 +3,7 @@ import { useAdminAuthStore } from '@admin/stores/adminAuth.store'
 
 export function useAdminAuth() {
   const store = useAdminAuthStore()
-  const { user, isAuthenticated, isLoading, error, roleLabel } = storeToRefs(store)
+  const { user, isAuthenticated, isLoading, error, roleLabel, pendingChallenge, mfaSetup } = storeToRefs(store)
 
   return {
     user,
@@ -11,7 +11,11 @@ export function useAdminAuth() {
     isLoading,
     error,
     roleLabel,
+    pendingChallenge,
+    mfaSetup,
     login: store.login,
+    verifyMfa: store.verifyMfa,
+    clearChallenge: store.clearChallenge,
     logout: store.logout,
     hasRole: store.hasRole,
     hydrate: store.hydrate,

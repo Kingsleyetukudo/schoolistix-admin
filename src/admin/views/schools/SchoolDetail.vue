@@ -14,6 +14,9 @@
       <SchoolUsageStats :school="store.selectedSchool" />
       <SchoolDomains :school="store.selectedSchool" />
       <SchoolNotes :school="store.selectedSchool" />
+      <div v-if="adminUser?.role === 'super_admin'" class="xl:col-span-2">
+        <SchoolCommunication :school="store.selectedSchool" />
+      </div>
       <div class="xl:col-span-2">
         <SchoolActions :school="store.selectedSchool" />
       </div>
@@ -26,14 +29,17 @@ import { onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import AdminFeaturePage from '@admin/components/common/AdminFeaturePage.vue'
 import { useSchoolsStore } from '@admin/stores/schools.store'
+import { useAdminAuth } from '@admin/composables/useAdminAuth'
 import SchoolActions from './components/SchoolActions.vue'
 import SchoolDomains from './components/SchoolDomains.vue'
 import SchoolInfoCard from './components/SchoolInfoCard.vue'
 import SchoolNotes from './components/SchoolNotes.vue'
 import SchoolUsageStats from './components/SchoolUsageStats.vue'
+import SchoolCommunication from './components/SchoolCommunication.vue'
 
 const route = useRoute()
 const store = useSchoolsStore()
+const { user: adminUser } = useAdminAuth()
 
 const load = () => {
   const id = String(route.params.id ?? '')

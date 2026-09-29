@@ -25,6 +25,7 @@
         rows="4"
         class="min-h-28 w-full rounded-lg border border-black bg-white px-4 py-3 text-sm outline-none focus:border-slate-500"
         :placeholder="isChat ? 'Type a chat message...' : 'Write a reply...'"
+        @input="notifyTyping"
         required
       ></textarea>
       <label v-if="!isChat" class="flex items-center gap-2 text-sm text-slate-700">
@@ -43,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 import axios from 'axios'
 import AdminPanelCard from '@admin/components/common/AdminPanelCard.vue'
 import SearchableDropdownSelect from '@admin/components/common/SearchableDropdownSelect.vue'
@@ -68,6 +69,20 @@ const status = ref('')
 const saving = ref(false)
 const notice = ref('')
 const noticeType = ref<'success' | 'error'>('success')
+let typingTimer: number | null = null
+
+const stopTyping = () => {
+  if (typingTimer !== null) window.clearTimeout(typingTimer)
+  typingTimer = null
+  if (isChat.value) void supportApi.typing(props.ticketId, false).catch(() => {})
+}
+
+const notifyTyping = () => {
+  if (!isChat.value) return
+  if (typingTimer !== null) window.clearTimeout(typingTimer)
+  void supportApi.typing(props.ticketId, true).catch(() => {})
+  typingTimer = window.setTimeout(stopTyping, 1200)
+}
 
 const showNotice = (value: string, type: 'success' | 'error') => {
   notice.value = value
@@ -87,6 +102,7 @@ const submit = async () => {
   saving.value = true
   try {
     await supportApi.reply(props.ticketId, message.value.trim(), isInternal.value, status.value || undefined)
+    stopTyping()
     showNotice(isInternal.value ? 'Internal note added.' : 'Reply sent.', 'success')
     message.value = ''
     isInternal.value = false
@@ -98,4 +114,6 @@ const submit = async () => {
     saving.value = false
   }
 }
+
+onBeforeUnmount(stopTyping)
 </script>

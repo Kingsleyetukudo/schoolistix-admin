@@ -56,13 +56,13 @@ export const adminRoutes: RouteRecordRaw[] = [
     path: 'subscriptions',
     name: 'AdminSubscriptions',
     component: () => import('@admin/views/subscriptions/SubscriptionsList.vue'),
-    meta: { title: 'Subscriptions', icon: icon('subscriptions'), roles: ['super_admin', 'billing_admin'] },
+    meta: { title: 'Subscriptions', icon: icon('subscriptions'), roles: ['super_admin', 'billing_admin', 'auditor'] },
   },
   {
     path: 'subscriptions/:id',
     name: 'AdminSubscriptionDetail',
     component: () => import('@admin/views/subscriptions/SubscriptionDetail.vue'),
-    meta: { title: 'Subscription Details', parent: 'AdminSubscriptions', roles: ['super_admin', 'billing_admin'] },
+    meta: { title: 'Subscription Details', parent: 'AdminSubscriptions', roles: ['super_admin', 'billing_admin', 'auditor'] },
   },
 
   {

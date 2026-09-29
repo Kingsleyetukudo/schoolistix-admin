@@ -58,6 +58,7 @@ export const normalizeSupportTicket = (ticket: Record<string, unknown> = {}): Su
         }
       : null,
     replyCount: Number(ticket.reply_count ?? ticket.replyCount ?? 0),
+    ...(Array.isArray(ticket.replies) ? { replies: ticket.replies as Array<Record<string, unknown>> } : {}),
   }
 }
 
@@ -115,5 +116,9 @@ export const supportApi = {
       status,
     })
     return response.data
+  },
+
+  async typing(id: string, isTyping: boolean) {
+    await adminApi.post(`/support/tickets/${id}/typing`, { isTyping })
   },
 }

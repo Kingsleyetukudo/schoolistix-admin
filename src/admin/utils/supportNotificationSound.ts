@@ -78,16 +78,16 @@ export const playSupportNotificationSound = async () => {
   gain.connect(context.destination)
 
   gain.gain.setValueAtTime(0.0001, now)
-  gain.gain.exponentialRampToValueAtTime(0.08, now + 0.015)
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.24)
+  gain.gain.exponentialRampToValueAtTime(0.2, now + 0.015)
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.34)
 
   const oscillator = context.createOscillator()
   oscillator.type = 'sine'
-  oscillator.frequency.setValueAtTime(784, now)
-  oscillator.frequency.exponentialRampToValueAtTime(1046, now + 0.12)
+  oscillator.frequency.setValueAtTime(880, now)
+  oscillator.frequency.exponentialRampToValueAtTime(1174, now + 0.16)
   oscillator.connect(gain)
   oscillator.start(now)
-  oscillator.stop(now + 0.24)
+  oscillator.stop(now + 0.34)
 
   return true
 }

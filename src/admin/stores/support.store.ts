@@ -25,6 +25,7 @@ export const useSupportStore = defineStore('adminSupport', () => {
   const connectionState = ref<'offline' | 'connecting' | 'live' | 'degraded' | 'preview'>('offline')
   const stream = ref<EventSource | null>(null)
   const reconnectTimer = ref<number | null>(null)
+  const typingByTicket = ref<Record<string, { actorName: string; isTyping: boolean }>>({})
 
   const applyIncomingTicket = (ticket: SupportTicket | null | undefined) => {
     if (!ticket?.id) return
@@ -70,7 +71,7 @@ export const useSupportStore = defineStore('adminSupport', () => {
       if (nextChannel) {
         channel.value = nextChannel
       }
-      const response = await supportApi.list()
+      const response = await supportApi.list(channel.value)
       tickets.value = response.data
     } finally {
       isLoading.value = false
@@ -166,6 +167,26 @@ export const useSupportStore = defineStore('adminSupport', () => {
       }
     })
 
+    source.addEventListener('support.ticket.typing', (event) => {
+      const payload = JSON.parse(event.data || '{}') as {
+        ticketId?: string
+        actorName?: string
+        actorType?: string
+        isTyping?: boolean
+      }
+      if (!payload.ticketId || payload.actorType === 'admin') return
+      if (!payload.isTyping) {
+        const next = { ...typingByTicket.value }
+        delete next[payload.ticketId]
+        typingByTicket.value = next
+        return
+      }
+      typingByTicket.value = {
+        ...typingByTicket.value,
+        [payload.ticketId]: { actorName: payload.actorName || 'School contact', isTyping: true },
+      }
+    })
+
     source.onerror = () => {
       if (stream.value !== source) return
 
@@ -185,11 +206,13 @@ export const useSupportStore = defineStore('adminSupport', () => {
     }
 
     connectionState.value = 'offline'
+    typingByTicket.value = {}
   }
 
   return {
     tickets,
     selectedTicket,
+    typingByTicket,
     channel,
     isLoading,
     connectionState,

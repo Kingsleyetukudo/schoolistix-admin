@@ -11,6 +11,9 @@
     </div>
     <div v-else class="grid gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
       <AdminPanelCard title="Conversation" description="Ticket thread and activity history.">
+        <p v-if="isChat && typingByTicket[String(ticket.id)]" class="mb-3 text-xs font-medium text-slate-500">
+          {{ typingByTicket[String(ticket.id)].actorName }} is typing…
+        </p>
         <div class="mb-4 flex flex-wrap items-center gap-2">
           <h3 class="mr-auto text-lg font-semibold text-slate-900">
             {{ ticket.subject }}
@@ -122,7 +125,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import AdminFeaturePage from '@admin/components/common/AdminFeaturePage.vue'
 import AdminPanelCard from '@admin/components/common/AdminPanelCard.vue'
@@ -137,6 +140,7 @@ import TicketReplyForm from './components/TicketReplyForm.vue'
 const route = useRoute()
 const { user: authUser } = useAdminAuth()
 const supportStore = useSupportStore()
+const typingByTicket = computed(() => supportStore.typingByTicket)
 const ticket = ref<Record<string, unknown> | null>(null)
 const isLoading = ref(false)
 const admins = ref<Array<{ id: string; name: string; email: string; role: string }>>([])
@@ -237,6 +241,7 @@ const load = async () => {
   isLoading.value = true
   try {
     ticket.value = await supportApi.getDetail(id)
+    supportStore.selectedTicket = ticket.value as import('@admin/types/support.types').SupportTicket
     syncAssignedAdminId()
     void supportStore.markTicketRead(id).catch(() => {})
   } catch {
@@ -247,8 +252,19 @@ const load = async () => {
 }
 
 onMounted(() => {
+  supportStore.connectStream()
   void loadAdmins()
   void load()
 })
 watch(() => route.params.id, load)
+watch(
+  () => supportStore.selectedTicket,
+  (updated) => {
+    if (updated && String(updated.id) === String(route.params.id)) {
+      ticket.value = { ...ticket.value, ...updated }
+    }
+  },
+  { deep: true },
+)
+onBeforeUnmount(() => supportStore.disconnectStream())
 </script>

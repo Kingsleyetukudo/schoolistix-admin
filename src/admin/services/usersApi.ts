@@ -9,6 +9,7 @@ const normalizeUser = (user: Record<string, unknown>) => ({
   role: String(user.role ?? ''),
   status: String(user.status ?? 'active'),
   lastLoginAt: user.lastLoginAt ?? null,
+  mfaEnabled: Boolean(user.mfaEnabled),
   createdAt: user.createdAt ?? null,
 })
 
@@ -24,6 +25,10 @@ export const usersApi = {
   },
   async remove(id: string) {
     const response = await adminApi.delete(`/users/${id}`)
+    return response.data
+  },
+  async resetMfa(id: string) {
+    const response = await adminApi.post(`/users/${id}/mfa/reset`)
     return response.data
   },
 }

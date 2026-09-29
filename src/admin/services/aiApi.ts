@@ -183,6 +183,17 @@ export interface AiKnowledgeSummaryResponse {
 }
 
 export const aiApi = {
+  async communicationDraft(payload: {
+    instruction: string
+    existingDraft?: string
+    mode: 'draft' | 'correct'
+    tone?: string
+    channels: string[]
+    schoolName: string
+  }): Promise<{ provider: string; text: string }> {
+    const response = await adminApi.post('/ai/communication-draft', payload)
+    return response.data
+  },
   async usage(params: Record<string, unknown> = {}): Promise<AiUsageResponse> {
     const response = await adminApi.get('/ai/usage', { params })
     return (response.data ?? {}) as AiUsageResponse

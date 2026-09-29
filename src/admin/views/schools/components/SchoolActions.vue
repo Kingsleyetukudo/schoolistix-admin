@@ -2,6 +2,15 @@
   <AdminPanelCard title="Admin Actions" description="Suspend, activate, impersonate, or grant tester access to this school.">
     <div class="flex flex-wrap gap-3">
       <button
+        v-if="isSuperAdmin"
+        type="button"
+        class="rounded-lg border border-indigo-700 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-800 hover:bg-indigo-100 disabled:opacity-50"
+        :disabled="isBackingUp || !school"
+        @click="downloadBackup"
+      >
+        {{ isBackingUp ? 'Preparing backup…' : 'Download school backup' }}
+      </button>
+      <button
         type="button"
         class="rounded-lg border border-indigo-700 px-4 py-2 text-sm font-semibold"
         :class="school?.multi_campus_enabled ? 'bg-indigo-700 text-white' : 'bg-white text-indigo-800'"
@@ -105,7 +114,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import axios from 'axios'
 import AdminPanelCard from '@admin/components/common/AdminPanelCard.vue'
 import AdminConfirmModal from '@admin/components/common/AdminConfirmModal.vue'
@@ -113,14 +122,19 @@ import SearchableDropdownSelect from '@admin/components/common/SearchableDropdow
 import { schoolsApi } from '@admin/services/schoolsApi'
 import { useSchoolsStore } from '@admin/stores/schools.store'
 import type { School } from '@admin/types/school.types'
+import { useAdminAuth } from '@admin/composables/useAdminAuth'
+import { schoolCommunicationApi } from '@admin/services/schoolCommunicationApi'
 
 const props = defineProps<{ school: School | null }>()
 
 const store = useSchoolsStore()
+const { user } = useAdminAuth()
+const isSuperAdmin = computed(() => user.value?.role === 'super_admin')
 const acting = ref(false)
 const suspendOpen = ref(false)
 const testerOpen = ref(false)
 const isSaving = ref(false)
+const isBackingUp = ref(false)
 const plan = ref('professional')
 const durationDays = ref(30)
 const notice = ref('')
@@ -155,6 +169,27 @@ const showNotice = (message: string, type: 'success' | 'error' = 'success') => {
 
 const reload = () => {
   if (props.school?.id) store.fetchSchool(String(props.school.id))
+}
+
+const downloadBackup = async () => {
+  if (!props.school || isBackingUp.value) return
+  isBackingUp.value = true
+  try {
+    const { blob, fileName } = await schoolCommunicationApi.backup(String(props.school.id))
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = fileName
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    URL.revokeObjectURL(url)
+    showNotice(`Backup downloaded for ${String(props.school.name)}.`)
+  } catch (error) {
+    showNotice(errorMessage(error), 'error')
+  } finally {
+    isBackingUp.value = false
+  }
 }
 
 const loginAs = async () => {

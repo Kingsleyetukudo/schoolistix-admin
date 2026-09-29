@@ -16,7 +16,7 @@
   sign in again.
 </p>
 
-<form class="mt-10 space-y-6" @submit.prevent="submit">
+<form v-if="!pendingChallenge" class="mt-10 space-y-6" @submit.prevent="submit">
         <div>
           <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500">
             Email
@@ -65,6 +65,29 @@
           {{ isLoading ? 'Signing In...' : 'Login' }}
         </button>
       </form>
+      <form v-else class="mt-10 space-y-5" @submit.prevent="submitMfa">
+        <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+          <template v-if="pendingChallenge.mode === 'setup'">
+            <p class="font-semibold text-slate-900">Set up authenticator verification</p>
+            <p class="mt-1">Add Schoolistix Admin to an authenticator app, then enter its current six-digit code.</p>
+            <p class="mt-3 text-xs font-semibold uppercase tracking-wide text-slate-500">Setup key</p>
+            <code class="mt-1 block break-all rounded-lg bg-white p-3 text-sm">{{ mfaSetup?.secret }}</code>
+          </template>
+          <template v-else>
+            <p class="font-semibold text-slate-900">Two-step verification</p>
+            <p class="mt-1">Enter the six-digit code from your authenticator app.</p>
+          </template>
+        </div>
+        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500">
+          Authenticator code
+          <input v-model="challengeCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required placeholder="000000" class="mt-1.5 h-12 w-full rounded-xl border border-black bg-white px-4 text-center text-lg tracking-[0.35em] text-slate-900 outline-none focus:ring-2 focus:ring-slate-300" />
+        </label>
+        <p v-if="error" class="rounded-xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-700">{{ error }}</p>
+        <button type="submit" class="h-12 w-full rounded-xl bg-slate-900 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-slate-700">
+          {{ isLoading ? 'Verifying...' : pendingChallenge.mode === 'setup' ? 'Enable MFA and Sign In' : 'Verify and Sign In' }}
+        </button>
+        <button type="button" class="w-full text-sm font-semibold text-slate-500 hover:text-slate-900" @click="startOver">Back to sign in</button>
+      </form>
     </div>
   </section>
 </template>
@@ -77,19 +100,36 @@ import { Eye, EyeOff } from 'lucide-vue-next'
 
 const router = useRouter()
 const route = useRoute()
-const { login, isLoading, error } = useAdminAuth()
+const { login, verifyMfa, clearChallenge, pendingChallenge, mfaSetup, isLoading, error } = useAdminAuth()
 
 const isIdleLogout = computed(() => route.query.reason === 'idle')
 const isSuperAdminLogin = computed(() => route.path.startsWith('/super-admin'))
 const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
+const challengeCode = ref('')
+
+const finishSignIn = () => {
+  const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/admin/dashboard'
+  router.push(redirect)
+}
 
 const submit = async () => {
   try {
-    await login({ email: email.value, password: password.value })
-    const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/admin/dashboard'
-    router.push(redirect)
+    const result = await login({ email: email.value, password: password.value })
+    if (!('mfaRequired' in result) && !('mfaSetupRequired' in result)) finishSignIn()
   } catch {}
+}
+
+const submitMfa = async () => {
+  try {
+    await verifyMfa(challengeCode.value)
+    finishSignIn()
+  } catch {}
+}
+
+const startOver = () => {
+  clearChallenge()
+  challengeCode.value = ''
 }
 </script>

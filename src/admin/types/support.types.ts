@@ -35,4 +35,5 @@ export interface SupportTicket extends Record<string, unknown> {
   unreadForAdmin?: boolean
   assignedTo?: SupportTicketAssignee | null
   replyCount?: number
+  replies?: Array<Record<string, unknown>>
 }

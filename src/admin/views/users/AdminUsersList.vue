@@ -24,6 +24,9 @@
     >
       {{ notice }}
     </div>
+    <p class="mb-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+      Admin sign-in now requires an authenticator code. Review this status regularly; MFA secrets are never shown here.
+    </p>
 
     <div class="grid gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
       <AdminDataTable
@@ -46,7 +49,20 @@
         <template #column-lastLoginAt="{ row }">
           <span class="text-sm text-slate-600">{{ formatDate(row.lastLoginAt) }}</span>
         </template>
+        <template #column-mfaEnabled="{ row }">
+          <span :class="Boolean(row.mfaEnabled) ? 'text-emerald-700' : 'text-rose-700'" class="text-xs font-bold">
+            {{ Boolean(row.mfaEnabled) ? 'Enabled' : 'Not enabled' }}
+          </span>
+        </template>
         <template #actions="{ row }">
+          <button
+            v-if="Boolean(row.mfaEnabled)"
+            type="button"
+            class="mr-2 rounded-lg border border-amber-700 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-900 transition hover:bg-amber-100"
+            @click="resetMfa(row)"
+          >
+            Reset MFA
+          </button>
           <button
             type="button"
             class="rounded-lg border border-rose-700 bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-800 transition hover:bg-rose-100"
@@ -91,6 +107,7 @@ const columns = [
   { key: 'email', label: 'Email', sortable: true },
   { key: 'role', label: 'Role', sortable: true },
   { key: 'status', label: 'Status', sortable: true },
+  { key: 'mfaEnabled', label: 'MFA', sortable: true },
   { key: 'lastLoginAt', label: 'Last Login', sortable: true },
 ]
 
@@ -144,6 +161,18 @@ const loadUsers = async () => {
 const openDelete = (row: Record<string, unknown>) => {
   pendingUser.value = row
   deleteOpen.value = true
+}
+
+const resetMfa = async (row: Record<string, unknown>) => {
+  const name = String(row.name ?? row.email ?? 'this admin')
+  if (!window.confirm(`Reset MFA for ${name}? They will need to enroll an authenticator again at next sign-in.`)) return
+  try {
+    await usersApi.resetMfa(String(row.id))
+    showNotice(`MFA reset for ${name}.`, 'success')
+    await loadUsers()
+  } catch (error) {
+    showNotice(errorMessage(error), 'error')
+  }
 }
 
 const confirmDelete = async () => {

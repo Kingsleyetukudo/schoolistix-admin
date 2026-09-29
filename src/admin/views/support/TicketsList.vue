@@ -89,7 +89,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminDataTable from '@admin/components/common/AdminDataTable.vue'
 import AdminFeaturePage from '@admin/components/common/AdminFeaturePage.vue'
@@ -170,12 +170,16 @@ const switchTab = (tab: 'ticket' | 'chat') => {
   activeTab.value = tab
 }
 
+watch(activeTab, (tab) => {
+  void store.fetchTickets(tab)
+})
+
 const visibleTickets = computed(() =>
   store.tickets.filter((ticket) => String(ticket.channel) === activeTab.value),
 )
 
 onMounted(() => {
-  store.fetchTickets()
+  store.fetchTickets(activeTab.value)
   store.connectStream()
 })
 
