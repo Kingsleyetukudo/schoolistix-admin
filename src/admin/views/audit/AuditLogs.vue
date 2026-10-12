@@ -67,6 +67,7 @@ const ACTION_LABELS: Record<string, string> = {
   manual_payment_approved: 'Manual payment approved',
   manual_payment_rejected: 'Manual payment rejected',
   tester_access_activated: 'Tester access activated',
+  tester_access_revoked: 'Tester access revoked',
 }
 
 const columns = [

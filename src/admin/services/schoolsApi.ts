@@ -62,11 +62,15 @@ export const schoolsApi = {
     const response = await adminApi.put(`/schools/${id}/multi-campus`, { enabled })
     return response.data
   },
-    async activateTester(
+  async activateTester(
     id: string,
     payload: { plan?: string; billingCycle?: string; durationDays?: number; note?: string } = {},
   ) {
     const response = await adminApi.post(`/schools/${id}/activate-tester`, payload)
+    return response.data
+  },
+  async revokeTester(id: string) {
+    const response = await adminApi.delete(`/schools/${id}/tester-access`)
     return response.data
   },
 }

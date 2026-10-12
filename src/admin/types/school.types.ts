@@ -23,6 +23,7 @@ export interface School extends Record<string, unknown> {
   sections?: Array<{ code: string; label: string }>
   admin_email?: string | null
   multi_campus_enabled?: boolean
+  tester_access?: { active: boolean; expires_at: string | null }
   registered_at?: string
   users?: Array<{ id: string; name: string; email: string; role: string }>
 }
