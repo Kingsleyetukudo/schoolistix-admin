@@ -52,9 +52,9 @@ export const useSchoolsStore = defineStore('adminSchools', () => {
     const result = await schoolsApi.loginAs(id)
     const token = String(result.access_token || result.token || '')
     const loginUrl = String(result.login_url || '').replace(/\/+$/, '')
-    const target = loginUrl
-      ? `${loginUrl}/login?token=${encodeURIComponent(token)}`
-      : `${window.location.origin}/login?token=${encodeURIComponent(token)}`
+    const targetUrl = new URL('/admin/login', loginUrl || window.location.origin)
+    targetUrl.searchParams.set('token', token)
+    const target = targetUrl.toString()
     window.open(target, '_blank', 'noopener,noreferrer')
   }
 
