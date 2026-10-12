@@ -54,7 +54,7 @@
         Grant Tester Access
       </button>
       <button
-        v-if="isSuperAdmin && school?.tester_access?.active"
+        v-if="isSuperAdmin"
         type="button"
         class="rounded-lg border border-rose-700 bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-800 hover:bg-rose-100 disabled:opacity-50"
         :disabled="isRevoking"
@@ -85,7 +85,7 @@
     <AdminConfirmModal
       :open="revokeTesterOpen"
       title="Revoke tester access now?"
-      description="This immediately moves the school to the Free plan and disables the tester grant. This action is recorded in the admin audit log."
+      description="If this school has an active tester grant, it will immediately move to the Free plan. Regular paid subscriptions are protected; the request will be rejected if no tester grant is active. This action is recorded in the admin audit log."
       @cancel="revokeTesterOpen = false"
       @confirm="revokeTester"
     />
